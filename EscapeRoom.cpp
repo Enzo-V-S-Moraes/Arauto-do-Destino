@@ -49,6 +49,8 @@ Repositório no GitHub (0,3 ponto): Repositório no Github contendo o código pr
 Acompanhamento do projeto (0,5 ponto): Terá dois dias específicos para o acompanhamento dos projeto, para esses dias os alunos devem mostrar que houve processo no desenvolvimento, será avaliado o quanto foi desenvolvido entre as semanas. Os dias do acompanhamento são 13/09 e 20/09.*/
 
 #include <iostream>
+#include <time.h>
+#include <cstdlib>
 
 using namespace std;
 
@@ -69,7 +71,8 @@ void Criar(Coordenada &)
 void Matriz(int x, int y)
 {
      char matriz[25][25];
-     int i, j;
+     int i, j, k, aux;
+     unsigned seed = time(0);
 
      for (i = 0; i < 25; i++)
      {
@@ -94,33 +97,48 @@ void Matriz(int x, int y)
                }
                else
                {
-                    matriz[i][j] = ' ';
+
+                    for (k = 0; k < 5; k++)
+                    {
+                         srand(2);
+                         aux = rand() % 1;
+
+                         if (aux = 1)
+                         {
+                              matriz[i][j] = ' ';
+                         }
+
+                         else if (aux = 0)
+                         {
+                              matriz[i][j] = '#';
+                         }
+                    }
                }
           }
      }
 
-     if (matriz[x][y] == '*')
-     {
-          cout << "Parede\n";
-     }
+     matriz[x][y] = '&';
 
-     else
+     for (i = 0; i < 25; i++)
      {
-          matriz[x][y] = '&';
-
-          for (i = 0; i < 25; i++)
+          for (j = 0; j < 25; j++)
           {
-               for (j = 0; j < 25; j++)
-               {
-                    cout << matriz[i][j];
-               }
-
-               cout << "\n";
+               cout << matriz[i][j];
           }
+
+          cout << "\n";
      }
 }
 
 int main()
+{
+
+     Criar(posicao);
+
+     char opc;
+
+     Matriz(posicao.x, posicao.y);
+}
 {
 
      Criar(posicao);
