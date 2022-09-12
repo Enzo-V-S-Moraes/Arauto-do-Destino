@@ -52,28 +52,22 @@ Acompanhamento do projeto (0,5 ponto): Terá dois dias específicos para o acomp
 
 using namespace std;
 
-#include <iostream>
-
-using namespace std;
-
 struct Coordenada
 {
      int x;
      int y;
 };
 
+Coordenada posicao;
+
 void Criar(Coordenada &)
 {
-     Coordenada posicao;
-
      cout << "Digite as coordenadas (x, y) do herói: \n";
      cin >> posicao.x >> posicao.y;
 }
 
 void Matriz(int x, int y)
 {
-     Coordenada posicao;
-
      char matriz[25][25];
      int i, j;
 
@@ -105,22 +99,29 @@ void Matriz(int x, int y)
           }
      }
 
-     matriz[x][y] = '&';
-
-     for (i = 0; i < 25; i++)
+     if (matriz[x][y] == '*')
      {
-          for (j = 0; j < 25; j++)
-          {
-               cout << matriz[i][j];
-          }
+          cout << "Parede\n";
+     }
 
-          cout << "\n";
+     else
+     {
+          matriz[x][y] = '&';
+
+          for (i = 0; i < 25; i++)
+          {
+               for (j = 0; j < 25; j++)
+               {
+                    cout << matriz[i][j];
+               }
+
+               cout << "\n";
+          }
      }
 }
 
 int main()
 {
-     Coordenada posicao;
 
      Criar(posicao);
 
@@ -130,35 +131,35 @@ int main()
 
      for (;;)
      {
-          cout << "w: cima\t a: esquerda\t s: baixo\t d: direita\t u: sair" << endl;
+          cout << "w: cima\t a: esquerda\t s: baixo\t d: direita\t u: sair\t ESCOLHA: ";
           cin >> opc;
 
           if (opc == 'w')
           {
-               Matriz(posicao.x - 1, posicao.y);
-
                posicao.x = posicao.x - 1;
+
+               Matriz(posicao.x, posicao.y);
           }
 
           else if (opc == 'a')
           {
-               Matriz(posicao.x, posicao.y - 1);
-
                posicao.y = posicao.y - 1;
+
+               Matriz(posicao.x, posicao.y);
           }
 
           else if (opc == 's')
           {
-               Matriz(posicao.x + 1, posicao.y);
-
                posicao.x = posicao.x + 1;
+
+               Matriz(posicao.x, posicao.y);
           }
 
           else if (opc == 'd')
           {
-               Matriz(posicao.x, posicao.y + 1);
-
                posicao.y = posicao.y + 1;
+
+               Matriz(posicao.x, posicao.y);
           }
 
           else
