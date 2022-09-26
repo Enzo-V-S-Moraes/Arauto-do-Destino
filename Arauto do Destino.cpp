@@ -37,6 +37,8 @@ void jogo()
      Primeiro_Mapa(jogador);
      Segundo_Mapa(jogador);
      Terceiro_Mapa(jogador);
+     vitoria();
+     Menu();
 }
 
 void Primeiro_Mapa(Personagem jogador)
@@ -670,39 +672,40 @@ void Terceiro_Mapa(Personagem jogador)
           system("cls");
           if (chave == false)
           {
-               Terceiro_Mapa[4][48] = '@';
+               Terceiro_Mapa[73][4] = '@';
           }
 
           if (chave == false)
           {
-               Terceiro_Mapa[46][1] = 'D';
+               Terceiro_Mapa[1][71] = 'D';
           }
           if (chave == true)
           {
+          	Terceiro_Mapa[1][71] = '=';
           }
 
           if (chave == false)
           {
-               Terceiro_Mapa[48][45] = 'D';
+               Terceiro_Mapa[73][70] = 'D';
           }
           if (chave == true)
           {
-               Terceiro_Mapa[48][45] = '=';
+               Terceiro_Mapa[73][70] = '=';
           }
 
           if (botao == false)
           {
-               Terceiro_Mapa[6][40] = 'D';
+               Terceiro_Mapa[6][65] = 'D';
           }
           if (botao == true)
           {
-               Terceiro_Mapa[6][40] = '=';
+               Terceiro_Mapa[6][65] = '=';
           }
 
-          Terceiro_Mapa[48][7] = '>';
-          Terceiro_Mapa[6][38] = '>';
-          Terceiro_Mapa[7][46] = '>';
-          Terceiro_Mapa[36][48] = '>';
+          Terceiro_Mapa[73][7] = '>';
+          Terceiro_Mapa[6][63] = '>';
+          Terceiro_Mapa[7][71] = '>';
+          Terceiro_Mapa[62][73] = '>';
 
           Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
 
@@ -849,44 +852,44 @@ void Terceiro_Mapa(Personagem jogador)
           case 'I':
           case 'i':
           {
-               if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[48][4])
+               if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[73][4])
                {
 
                     chave = true;
-                    Terceiro_Mapa[48][4] = ' ';
+                    Terceiro_Mapa[73][4] = ' ';
                }
 
                if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[6][39])
                {
                     botao = true;
-                    Terceiro_Mapa[20][9] = 'O';
+                    Terceiro_Mapa[6][39] = 'O';
                }
 
-               if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[48][7])
+               if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[73][7])
                {
                     jogador.y = 6;
-                    jogador.x = 38;
+                    jogador.x = 63;
                }
-               else if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[6][38])
+               else if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[6][63])
                {
-                    jogador.y = 48;
+                    jogador.y = 73;
                     jogador.x = 7;
                }
 
-               if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[7][46])
+               if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[7][71])
                {
-                    jogador.y = 36;
-                    jogador.x = 48;
+                    jogador.y = 62;
+                    jogador.x = 73;
                }
-               else if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[36][48])
+               else if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[62][73])
                {
                     jogador.y = 7;
-                    jogador.x = 46;
+                    jogador.x = 71;
                }
           }
           }
 
-          if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[69][72] && chave == true)
+          if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[72][69] && chave == true)
           {
                termino = true;
           }
@@ -980,4 +983,5 @@ void vitoria()
 {
 
      cout << "parabens!!. voce ganhou" << endl;
+     system("pause");
 }
