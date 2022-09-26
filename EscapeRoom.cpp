@@ -1,188 +1,981 @@
-/*INTRODUÇÃO:
-     Um jogo de aventura é um gênero de videogame no qual o jogador assume o papel de protagonista em uma história interativa impulsionada pela exploração e/ou resolução de quebra-cabeças (Rollings & Adams 2003, p. 43). O foco do gênero na história permite que ele se baseie fortemente em outras mídias, literatura e filmes. Muitos jogos de aventura (texto e gráfico) são projetados para um único jogador, já que essa ênfase na história e no personagem dificulta o design multijogador (Hitchens 2002, p. 258). Colossal Cave Adventure é identificado ("The Colossal Cave Adventure page". rickadams.org. Retrieved 31 July 2020.) como o primeiro jogo de aventura, lançado pela primeira vez em 1976, enquanto outras séries de jogos de aventura notáveis incluem Zork, King's Quest, The Secret of Monkey Island e Myst.
-
-OBJETIVO:
-     Desenvolver a habilidade do aluno de resolução de problema, raciocínio lógico algorítmico e competência interpessoal, além de treinar todos o conhecimento adquirido na programação estruturada em C++.
-ATIVIDADE:
-     O projeto pode ser desenvolvido em equipe de até três alunos e gera três artefatos para serem entregues:
-O arquivo principal do código desenvolvido em C++;
-Um repositório no Github, contendo o arquivo do código e um arquivo README explicando o que é o projeto e o nome dos integrantes da equipe;
-Um seminário da apresentação e defesa do código.
-     O projeto envolve o desenvolvimento de um jogo em C++. O jogo deve utilizar o console para o desenvolvimento gráfico e interação com o usuário. O objetivo do jogo é desafiar o jogador a passar de três fases, onde cada um deles terão seu próprio mapa.
-
-
-JOGO:
-     O jogo é do estilo aventura/puzzle onde o objetivo é o jogador conseguir passar de três fases. Em cada fase o jogador deve se movimentar para pegar uma chave para abrir a porta fechada.
-     O jogador possui os seguintes comando:
-W: O jogador movimenta uma unidade para cima;
-A: O jogador movimenta uma unidade para esquerda;
-S: O jogador movimenta uma unidade para baixo;
-D: O jogador movimenta uma unidade para direita;
-I: O jogador interage com o objeto que ele estar em cima.
-     O jogo possui os seguintes elementos nas fases:
-&: Simbolo que representa o jogador.
-*: Simbolo que representa uma parede, o jogador ao se movimentar não pode passar pela parede.
-@: Simbolo que representa a chave para abrir a porta para finalizar a fase, a porta abre no momento que o jogador interage com a chave.
-D: Simbolo que representa a porta fechada.
-=: Simbolo que representa a porta aberta quando o jogador interagiu com a chave.
-O: Simbolo que representa um botão que o usuário pode interagir, o botão fica no chão e o jogador deve ficar em cima dele para poder interagir.
-#: Simbolo que representa um espinho. A fase é reiniciada quando o jogador toca no espinho, caso a fase seja reiniciada três vezes, o jogo volta para o menu principal.
->: Simbolo que representa um teletransporte. O teletransporte sempre deve vir em par, quando o jogador toca em um ele é transportado para o outro e vice-versa.
-     O jogo possui um total de 8 telas:
-Menu Principal: Menu com com três escolhas para o usuário (Jogar, Tutorial, Sair);
-Tutorial: Texto ensinando o jogador a jogar o jogo;
-Sair: Texto de despedida e encerramento do programa;
-Fase 1: A Fase 1 é inicializada quando o jogador seleciona a opção Jogar no Menu Principal;
-Fase 2: A Fase 2 é inicializada quando o jogador termina a Fase 1;
-Fase 3: A Fase 3 é inicializada quando o jogador termina a Fase 2;
-Vitória: Texto elogiando o jogador por ter conseguido terminar o jogo, depois dessa tela o jogador volta para o Menu Principal. Essa tela só pode ser acessada se o jogador finalizar a Fase 3;
-Derrota: Texto caçoando o jogador, depois dessa tela o jogador volta para o Menu Principal. Essa tela só pode ser acessada quando o jogador perde em uma fase.
-     Cada fase deve possuir as seguintes características:
-Fase 1: Essa fase possui uma dimensão de 25x25 e possui os seguintes elementos: jogador, parede, chave e porta;
-Fase 2: Essa fase possui uma dimensão de 50x50 e possui os seguintes elementos: todos da Fase 1, botão e espinhos;
-Fase 3: Essa fase possui uma dimensão de 75x75 e possui os seguintes elementos: todos da Fase 2 e teletransporte.
-AVALIAÇÃO
-     O projeto terá a seguinte distribuições de pontos:
-Entrega do código (1,5 pontos): O código deve seguir as características descritas na seção JOGO.
-Apresentação e defesa do código (0,7 ponto): A equipe deve apresentar o jogo funcionando, as principais ideias e dificuldades durante o desenvolvimento. As apresentações serão no dia 26/09 durante o horário de aula.
-Repositório no GitHub (0,3 ponto): Repositório no Github contendo o código principal e um README explicando o que é o projeto e seu jogo, assim como o nome dos integrantes da equipe.
-Acompanhamento do projeto (0,5 ponto): Terá dois dias específicos para o acompanhamento dos projeto, para esses dias os alunos devem mostrar que houve processo no desenvolvimento, será avaliado o quanto foi desenvolvido entre as semanas. Os dias do acompanhamento são 13/09 e 20/09.*/
-
-#include <iostream>
-#include <time.h>
 #include <cstdlib>
+#include <unistd.h>
+#include <iostream>
+#include <string>
+#include <conio.h>
 
 using namespace std;
-
-struct Coordenada
+struct Personagem
 {
+     int hp;
      int x;
      int y;
+     char aparencia = '&';
 };
 
-Coordenada posicao;
-
-void Criar(Coordenada &)
-{
-     cout << "Digite as coordenadas (x, y) do herói: \n";
-     cin >> posicao.x >> posicao.y;
-}
-
-void Matriz(int x, int y)
-{
-     char matriz[25][25];
-     int i, j, k, aux;
-     unsigned seed = time(0);
-
-     for (i = 0; i < 25; i++)
-     {
-          for (j = 0; j < 25; j++)
-          {
-               if (i == 0)
-               {
-                    matriz[i][j] = '*';
-               }
-               else if (i == 24)
-               {
-                    matriz[i][j] = '*';
-               }
-
-               else if (j == 0)
-               {
-                    matriz[i][j] = '*';
-               }
-               else if (j == 24)
-               {
-                    matriz[i][j] = '*';
-               }
-               else
-               {
-
-                    for (k = 0; k < 5; k++)
-                    {
-                         srand(2);
-                         aux = rand() % 1;
-
-                         if (aux = 1)
-                         {
-                              matriz[i][j] = ' ';
-                         }
-
-                         else if (aux = 0)
-                         {
-                              matriz[i][j] = '#';
-                         }
-                    }
-               }
-          }
-     }
-
-     matriz[x][y] = '&';
-
-     for (i = 0; i < 25; i++)
-     {
-          for (j = 0; j < 25; j++)
-          {
-               cout << matriz[i][j];
-          }
-
-          cout << "\n";
-     }
-}
+void Menu(void);
+void Primeiro_Mapa(Personagem jogador);
+void Segundo_Mapa(Personagem jogador);
+void Terceiro_Mapa(Personagem jogador);
+void jogo();
+void Movimento();
+void derrota();
+void vitoria();
 
 int main()
 {
 
-     Criar(posicao);
+     Menu();
 
-     char opc;
-
-     Matriz(posicao.x, posicao.y);
+     system("PAUSE");
+     return 0;
 }
+
+void jogo()
+{
+     Personagem jogador;
+     Segundo_Mapa(jogador);
+}
+
+void Primeiro_Mapa(Personagem jogador)
 {
 
-     Criar(posicao);
+     int x = 25, y = 25, l = 0, c = 0;
+     bool chave = false;
+     bool termino = false;
+     char movimento;
 
-     char opc;
+     jogador.y = 13;
+     jogador.x = 13;
+     jogador.hp = 3;
 
-     Matriz(posicao.x, posicao.y);
+     char Primeiro_Mapa[25][25] = {
+         {'*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'},
+         {'*', '@', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', '*'},
+         {'*', '#', ' ', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', '#', ' ', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', '*'},
+         {'*', '#', '#', ' ', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', '*'},
+         {'*', '#', '#', ' ', '=', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*', '*', '*', '*', '*', '*'},
+         {'*', '#', '#', '#', '#', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', '*', '*', '*', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', ' ', ' ', ' ', '*', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '*'},
+         {'*', '*', 'D', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*', '*'}};
 
-     for (;;)
+     do
      {
-          cout << "w: cima\t a: esquerda\t s: baixo\t d: direita\t u: sair\t ESCOLHA: ";
-          cin >> opc;
-
-          if (opc == 'w')
+          system("cls");
+          if (chave == false)
           {
-               posicao.x = posicao.x - 1;
-
-               Matriz(posicao.x, posicao.y);
+               Primeiro_Mapa[1][1] = '@';
           }
 
-          else if (opc == 'a')
+          if (chave == false)
           {
-               posicao.y = posicao.y - 1;
-
-               Matriz(posicao.x, posicao.y);
+               Primeiro_Mapa[3][19] = 'D';
           }
-
-          else if (opc == 's')
+          if (chave == true)
           {
-               posicao.x = posicao.x + 1;
-
-               Matriz(posicao.x, posicao.y);
+               Primeiro_Mapa[3][19] = '=';
           }
-
-          else if (opc == 'd')
+          
+          Primeiro_Mapa[3][22] = '>';
+          Primeiro_Mapa[21][2] = '>';
+          
+          if (chave == false)
           {
-               posicao.y = posicao.y + 1;
-
-               Matriz(posicao.x, posicao.y);
+               Primeiro_Mapa[24][2] = 'D';
           }
-
-          else
+          if (chave == true)
           {
+               Primeiro_Mapa[24][2] = '=';
+          }
+          
+          Primeiro_Mapa[6][4] = '=';
+
+          Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+
+          for (l = 0; l < x; l++)
+          {
+               for (c = 0; c < y; c++)
+               {
+                    cout << Primeiro_Mapa[l][c] << " ";
+               }
+               cout << endl;
+          }
+          cout << endl;
+
+          movimento = getch();
+          switch (movimento)
+          {
+          case 'w':
+          case 'W':
+          {
+               if (Primeiro_Mapa[jogador.y - 1][jogador.x] == '*' || Primeiro_Mapa[jogador.y - 1][jogador.x] == 'D')
+               {
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Primeiro_Mapa[jogador.y - 1][jogador.x] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Você tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Primeiro_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 13;
+                    jogador.x = 13;
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Primeiro_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.y -= 1;
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
                break;
           }
+
+          case 'a':
+          case 'A':
+          {
+               if (Primeiro_Mapa[jogador.y][jogador.x - 1] == '*' || Primeiro_Mapa[jogador.y][jogador.x - 1] == 'D')
+               {
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Primeiro_Mapa[jogador.y][jogador.x - 1] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Voce tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Primeiro_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 13;
+                    jogador.x = 13;
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Primeiro_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.x -= 1;
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+
+          case 's':
+          case 'S':
+          {
+               if (Primeiro_Mapa[jogador.y + 1][jogador.x] == '*' || Primeiro_Mapa[jogador.y + 1][jogador.x] == 'D')
+               {
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Primeiro_Mapa[jogador.y + 1][jogador.x] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Voce tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Primeiro_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 13;
+                    jogador.x = 13;
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Primeiro_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.y += 1;
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+
+          case 'd':
+          case 'D':
+          {
+               if (Primeiro_Mapa[jogador.y][jogador.x + 1] == '*' || Primeiro_Mapa[jogador.y][jogador.x + 1] == 'D')
+               {
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Primeiro_Mapa[jogador.y][jogador.x + 1] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Voce tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Primeiro_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 13;
+                    jogador.x = 13;
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Primeiro_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.x += 1;
+                    Primeiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+          case 'I':
+          case 'i':
+          {
+               if (Primeiro_Mapa[jogador.y][jogador.x] == Primeiro_Mapa[1][1])
+               {
+
+                    chave = true;
+                    Primeiro_Mapa[1][1] = ' ';
+               }
+
+               if (chave == true)
+               {
+                    if (Primeiro_Mapa[jogador.y][jogador.x] == Primeiro_Mapa[21][24])
+                    {
+                         Primeiro_Mapa[3][19] = '=';
+                         termino = true;
+                    }
+               }
+               if (Primeiro_Mapa[jogador.y][jogador.x] == Primeiro_Mapa[3][22])
+               {
+                    jogador.y = 21;
+                    jogador.x = 2;
+               }
+               else if (Primeiro_Mapa[jogador.y][jogador.x] == Primeiro_Mapa[21][2])
+               {
+                    jogador.y = 3;
+                    jogador.x = 22;
+               }
+          }
+          }
+
+          if (Primeiro_Mapa[jogador.y][jogador.x] == Primeiro_Mapa[24][2])
+          {
+               Segundo_Mapa(jogador);
+          }
+
+          if (jogador.hp == 0)
+          {
+               system("cls || clear");
+               derrota();
+               Menu();
+          }
+
+     } while (termino == false);
+}
+
+void Segundo_Mapa(Personagem jogador)
+{
+     int x = 25, y = 25, l = 0, c = 0;
+     bool chave = false;
+     bool botao = false;
+     bool termino = false;
+     char movimento;
+
+     jogador.y = 12;
+     jogador.x = 12;
+     jogador.hp = 3;
+
+     char Segundo_Mapa[50][50] = {
+{'*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*'},	
+{'*','@','#',' ',' ',' ','#','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},	
+{'*',' ','#',' ','#',' ','#','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ','#',' ','#','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*','#','#','#','#',' ','#','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*','*','*','*','*',' ','*','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*','*','*','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*',' ',' ','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#','*',' ',' ','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ','O',' ',' ',' ',' ',' ','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#','*',' ',' ','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*',' ',' ','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*','*','*','*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*',' ',' ',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#','#','#','#','#','#',' ','#','#',' ','#','#','#','#',' ',' ','#','#',' ','*','*','*','*','*','*','*','*','*',' ','*'},
+{'*',' ',' ',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ','#','#','#','#','#','#','#','#',' ','#','#',' ','#','#','#','#',' ',' ','#','#',' ','*',' ',' ',' ','#',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ','#','#',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ',' ','#','#','#','#','#',' ','#','#',' ','*',' ',' ',' ','#',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ','#','#',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ',' ','#','#',' ','#','#',' ','#','#',' ','*',' ',' ',' ','#',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ','#','#',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ','#','#','#','#','#',' ','*',' ',' ',' ','#',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ','#','#','#','#','#',' ','*','#','D','#','#',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#','#','#','#','#','#',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ','#','#','#','#','#',' ','*',' ',' ',' ',' ',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ','#','#','#','#',' ','*',' ',' ',' ',' ',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ','#','#','#','#',' ','*',' ',' ',' ',' ',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ','#','#','#','#',' ','*',' ',' ',' ',' ',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ','#','#','#',' ','*',' ',' ',' ',' ',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ','#','#','#',' ','*',' ',' ',' ',' ',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ','#','#','#',' ','*',' ',' ',' ',' ',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ','#','#','#',' ','*',' ',' ',' ',' ',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#','#','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ','#','#','#',' ','*',' ',' ',' ',' ',' ',' ',' ','*',' ','*'},
+{'*',' ',' ',' ','#','#',' ',' ',' ',' ',' ',' ','#','#','#','#','#',' ',' ',' ',' ','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ','#','#',' ','*','*','*','*','*','*','*','*','*',' ','*'},
+{'*',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+{'*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*'}};
+
+     do
+     {
+          system("cls");
+          if (chave == false)
+          {
+               Segundo_Mapa[1][1] = '@';
+          }
+
+          if (botao == false)
+          {
+               Segundo_Mapa[20][12] = 'D';
+          }
+          if (botao == true)
+          {
+               Segundo_Mapa[20][12] = '=';
+          }
+
+
+          Segundo_Mapa[22][14] = '>';
+          Segundo_Mapa[34][41] = '>';
+
+
+          if (chave == false)
+          {
+               Segundo_Mapa[37][41] = 'D';
+          }
+          if (chave == true)
+          {
+               Segundo_Mapa[37][41] = '=';
+          }
+
+          Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+
+          for (l = 0; l < x; l++)
+          {
+               for (c = 0; c < y; c++)
+               {
+                    cout << Segundo_Mapa[l][c] << " ";
+               }
+               cout << endl;
+          }
+          cout << endl;
+
+          movimento = getch();
+          switch (movimento)
+          {
+          case 'w':
+          case 'W':
+          {
+               if (Segundo_Mapa[jogador.y - 1][jogador.x] == '*' || Segundo_Mapa[jogador.y - 1][jogador.x] == 'D')
+               {
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Segundo_Mapa[jogador.y - 1][jogador.x] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Você tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Segundo_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 12;
+                    jogador.x = 12;
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Segundo_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.y -= 1;
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+
+          case 'a':
+          case 'A':
+          {
+               if (Segundo_Mapa[jogador.y][jogador.x - 1] == '*' || Segundo_Mapa[jogador.y][jogador.x - 1] == 'D')
+               {
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Segundo_Mapa[jogador.y][jogador.x - 1] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Voce tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Segundo_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 12;
+                    jogador.x = 12;
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Segundo_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.x -= 1;
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+
+          case 's':
+          case 'S':
+          {
+               if (Segundo_Mapa[jogador.y + 1][jogador.x] == '*' || Segundo_Mapa[jogador.y + 1][jogador.x] == 'D')
+               {
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Segundo_Mapa[jogador.y + 1][jogador.x] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Voce tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Segundo_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 12;
+                    jogador.x = 12;
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Segundo_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.y += 1;
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+
+          case 'd':
+          case 'D':
+          {
+               if (Segundo_Mapa[jogador.y][jogador.x + 1] == '*' || Segundo_Mapa[jogador.y][jogador.x + 1] == 'D')
+               {
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Segundo_Mapa[jogador.y][jogador.x + 1] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Voce tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Segundo_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 12;
+                    jogador.x = 12;
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Segundo_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.x += 1;
+                    Segundo_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+          case 'I':
+          case 'i':
+          {
+               if (Segundo_Mapa[jogador.y][jogador.x] == Segundo_Mapa[1][1])
+               {
+
+                    chave = true;
+                    Segundo_Mapa[1][1] = ' ';
+               }
+
+               if (Segundo_Mapa[jogador.y][jogador.x] == Segundo_Mapa[22][14])
+               {
+                    jogador.y = 34;
+                    jogador.x = 41;
+               }
+               else if (Segundo_Mapa[jogador.y][jogador.x] == Segundo_Mapa[34][41])
+               {
+                    jogador.y = 22;
+                    jogador.x = 14;
+               }
+
+               if(Segundo_Mapa[jogador.y][jogador.x] == Segundo_Mapa[20][9])
+               {
+                    botao = true;
+                    Segundo_Mapa[20][9] = 'O';
+               }
+          }
+          }
+
+           if (Segundo_Mapa[jogador.y][jogador.x] == Segundo_Mapa[45][46])
+          {
+               Terceiro_Mapa(jogador);
+          }
+
+          if (jogador.hp == 0)
+          {
+               system("cls || clear");
+               derrota();
+               Menu();
+          }
+
+     } while (termino == false);
+}
+
+void Terceiro_Mapa(Personagem jogador)
+{
+     int x = 75, y = 75, l = 0, c = 0;
+     bool chave = false;
+     bool botao = false;
+     bool termino = false;
+     char movimento;
+
+     jogador.y = 1;
+     jogador.x = 3;
+     jogador.hp = 3;
+
+     char Terceiro_Mapa[75][75] = {
+ {'*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*'},	
+ {'*','#','#','&',' ','#','*','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#',' ',' ','D',' ',' ','*'},
+ {'*','#','#',' ',' ','#','*','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#',' ','#','#','#',' ','*'},
+ {'*','#','#',' ',' ','#','*','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#',' ','#','#','#',' ','*'},
+ {'*','#','#','#',' ','#','*','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#',' ','#','#','#',' ','*'},
+ {'*','#','#',' ',' ','#','*','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#',' ','#','#','#',' ','*'},
+ {'*',' ','#',' ','#','#','*','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','>','O','D',' ','#','#',' ','#','#','#',' ','*'},
+ {'*','#','#',' ',' ','#','*','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#',' ','#','>','#',' ','*'},
+ {'*','#','#',' ',' ','#','*','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#',' ','#',' ','#',' ','*'},
+ {'*','#',' ',' ',' ',' ','*','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ','#',' ',' ','#',' ','#',' ','*'},
+ {'*','#',' ','#','#',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ','#',' ',' ',' ','*'},
+ {'*','#',' ','#','#',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#','#','#','#','#','#','#','#','*'},
+ {'*','#',' ','#','#',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#',' ','#','#',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#',' ',' ','#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#',' ','#',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#','#','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','*','#',' ','#','#','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','M','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','O','#','#',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','R','#','#',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','R','#','#',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','T','#','#',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','E','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#',' ',' ','#','#','#','#','#','#','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ','#','#',' ',' ','#','#','#','#',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#',' ',' ','#',' ',' ','#',' ','#','#',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#','#',' ','#','#',' ','#',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','*'},
+ {'*','#','#','#',' ','#','#',' ','#',' ','#','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#','#','#','#','#','#','#','*'},
+ {'*','#','#','#',' ','#','#',' ','#',' ','#',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#',' ',' ',' ','*'},
+ {'*','#','#','#',' ','#','#',' ','#',' ','#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#','#',' ',' ','*'},
+ {'*','#','#',' ',' ','#','#',' ','#',' ','#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#',' ','#','>','*'},
+ {'*','#','#','#',' ','#','#',' ','#',' ','#',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#','#','#',' ','*'},
+ {'*','#','#',' ',' ','#','#',' ','#',' ','#',' ','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#','#','#',' ','*'},
+ {'*','#','#',' ','#','#','#',' ','#',' ','#',' ','#','#','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#','#','#',' ','*'},
+ {'*','#','#',' ',' ','#','#',' ','#',' ','#',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#','#','#',' ','*'},
+ {'*','#','#','#',' ','#','#',' ',' ',' ','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#','#','#',' ','*'},
+ {'*','#','#','#',' ','#','#','#','#','#','#','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#','#','#',' ','*'},
+ {'*','#','#','#',' ','#','#','#','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#',' ','#',' ','*'},
+ {'*','#','#',' ',' ','#','#','#','#',' ',' ','#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#',' ','#',' ','*'},
+ {'*','#','#',' ','#','#','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','#',' ','#',' ','*'},
+ {'*','#','#',' ','@','#','#','>',' ',' ',' ',' ',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#',' ',' ','D',' ',' ',' ','*'},
+ {'*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*','*'}
+};
+
+     do
+     {
+          system("cls");
+          if (chave == false)
+          {
+               Terceiro_Mapa[4][48] = '@';
+          }
+
+          if (chave == false)
+          {
+               Terceiro_Mapa[46][1] = 'D';
+          }
+          if (chave == true)
+          {
+               Terceiro_Mapa[46][1] = '=';
+          }
+
+          if (chave == false)
+          {
+               Terceiro_Mapa[48][45] = 'D';
+          }
+          if (chave == true)
+          {
+               Terceiro_Mapa[48][45] = '=';
+          }
+
+          if (botao == false)
+          {
+               Terceiro_Mapa[6][40] = 'D';
+          }
+          if (botao == true)
+          {
+               Terceiro_Mapa[6][40] = '=';
+          }
+
+
+          Terceiro_Mapa[48][7] = '>';
+          Terceiro_Mapa[6][38] = '>';
+          Terceiro_Mapa[7][46] = '>';
+          Terceiro_Mapa[36][48] = '>';
+
+          Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+
+          for (l = 0; l < x; l++)
+          {
+               for (c = 0; c < y; c++)
+               {
+                    cout << Terceiro_Mapa[l][c] << " ";
+               }
+               cout << endl;
+          }
+          cout << endl;
+
+          movimento = getch();
+          switch (movimento)
+          {
+          case 'w':
+          case 'W':
+          {
+               if (Terceiro_Mapa[jogador.y - 1][jogador.x] == '*' || Terceiro_Mapa[jogador.y - 1][jogador.x] == 'D')
+               {
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Terceiro_Mapa[jogador.y - 1][jogador.x] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Você tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Terceiro_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 1;
+                    jogador.x = 3;
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Terceiro_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.y -= 1;
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+
+          case 'a':
+          case 'A':
+          {
+               if (Terceiro_Mapa[jogador.y][jogador.x - 1] == '*' || Terceiro_Mapa[jogador.y][jogador.x - 1] == 'D')
+               {
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Terceiro_Mapa[jogador.y][jogador.x - 1] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Voce tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Terceiro_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 1;
+                    jogador.x = 3;
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Terceiro_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.x -= 1;
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+
+          case 's':
+          case 'S':
+          {
+               if (Terceiro_Mapa[jogador.y + 1][jogador.x] == '*' || Terceiro_Mapa[jogador.y + 1][jogador.x] == 'D')
+               {
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Terceiro_Mapa[jogador.y + 1][jogador.x] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Voce tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Terceiro_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 1;
+                    jogador.x = 3;
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Terceiro_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.y += 1;
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+
+          case 'd':
+          case 'D':
+          {
+               if (Terceiro_Mapa[jogador.y][jogador.x + 1] == '*' || Terceiro_Mapa[jogador.y][jogador.x + 1] == 'D')
+               {
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+
+               else if (Terceiro_Mapa[jogador.y][jogador.x + 1] == '#')
+               {
+                    jogador.hp -= 1;
+                    if (jogador.hp != 3)
+                    {
+                         cout << "Voce tem " << jogador.hp << " vidas\n";
+                         system("pause");
+                    }
+                    Terceiro_Mapa[jogador.y][jogador.x] = ' ';
+                    chave = false;
+                    termino = false;
+                    jogador.y = 1;
+                    jogador.x = 3;
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               else
+               {
+                    Terceiro_Mapa[jogador.y][jogador.x] = ' ';
+                    jogador.x += 1;
+                    Terceiro_Mapa[jogador.y][jogador.x] = jogador.aparencia;
+               }
+               break;
+          }
+          case 'I':
+          case 'i':
+          {
+               if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[48][4])
+               {
+
+                    chave = true;
+                    Terceiro_Mapa[48][4] = ' ';
+               }
+
+               if(Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[6][39])
+               {
+                    botao = true;
+                    Terceiro_Mapa[20][9] = 'O';
+               }
+
+               if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[48][7])
+               {
+                    jogador.y = 6;
+                    jogador.x = 38;
+               }
+               else if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[6][38])
+               {
+                    jogador.y = 48;
+                    jogador.x = 7;
+               }
+
+               if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[7][46])
+               {
+                    jogador.y = 36;
+                    jogador.x = 48;
+               }
+               else if (Terceiro_Mapa[jogador.y][jogador.x] == Terceiro_Mapa[36][48])
+               {
+                    jogador.y = 7;
+                    jogador.x = 46;
+               }
+          }
+          }
+
+          if (jogador.hp == 0)
+          {
+               system("cls || clear");
+               derrota();
+               Menu();
+          }
+
+     } while (termino == false);
+}
+
+void Menu()
+{
+     char escolha;
+
+     cout << "Bem vindo desafiante!!!!\n";
+     cout << "Escolha uma opcao.\n";
+     cout << "1 - Ir para o jogo" << endl;
+     cout << "2 - Tutorial" << endl;
+     cout << "3 - Sair" << endl;
+     cin >> escolha; // Escolha do jogador para o Menu.
+
+     switch (escolha)
+     {
+
+     case '1':
+
+          jogo();
+          break;
+     case '2':
+          system("cls");
+          cout << "Objetivo:\n"
+               << endl;
+          cout << "O seu objetivo e passar das fases do jogo." << endl;
+          cout << "Para isso você deve obter a uma chave e destrancar a porta que esta o teleporte para a area inacessivel." << endl;
+          cout << "porem CUIDADO!! pois ha espinhos que lhes causam dano.\n"
+               << endl;
+          cout << "Simbolos:\n"
+               << endl;
+          cout << "&: Jogador." << endl;
+          cout << "*: Parede." << endl;
+          cout << "@: Chave." << endl;
+          cout << "D: Porta Fechada." << endl;
+          cout << "=: Porta Aberta." << endl;
+          cout << "O: Botao." << endl;
+          cout << "#: Espinho." << endl;
+          cout << ">: Teletransporte.\n"
+               << endl;
+
+          system("pause");
+          system("cls");
+          main();
+          break;
+     case '3':
+          system("cls");
+          cout << "foda..." << endl;
+          exit(1);
+     default:
+          system("cls || clear");
+          Menu();
+          break;
      }
+}
+
+void derrota()
+{
+     int escolha;
+     system("cls");
+
+     cout << "Deseja jogar de novo?" << endl;
+     cout << "1) Sim\n2) Nao" << endl;
+     cin >> escolha;
+     switch (escolha)
+     {
+     case 1:
+          system("cls");
+          main();
+          break;
+     case 2:
+     default:
+          cout << "foda..." << endl;
+          exit(1);
+          break;
+     }
+}
+
+void vitoria(){ 
+  
+  cout << "parabens!!. voce ganhou" << endl;
+
 }
